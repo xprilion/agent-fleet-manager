@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div>
+
+    <form id="agent-form">
+        <div>
+            <input id="agent-title" type="text" name="title" placeholder="Name" required>
+        </div>
+        <div>
+            <textarea id="agent-description" name="description" placeholder="Description"></textarea>
+        </div>
+        <!-- <div>
+            <input id="agent-replicas" type="text" name="replicas" placeholder="Replicas" value="1" required>
+        </div> -->
+        <button type="submit">Add Agent</button>
+    </form>
+
+    <ul id="todo-list" style="padding: 0;">
+        {% for agent in agents %}
+            <li data-id="{{ agent.id }}" style="padding: 1rem; border: 1px dashed; display: flex; flex-direction: row; justify-content: space-between;">
+                <div style="display: flex; flex-direction: row; justify-content: space-between;">
+                    <div>
+                        <strong>{{ agent.title }}</strong>
+                        <p style="font-size: small;">{{ agent.id }} &middot; {{ agent.ip }} &middot; {{ agent.status }}</p>
+                    </div>
+                </div>
+                <button class="delete-btn" style="max-width: fit-content;" >Delete</button>
+            </li>
+        {% endfor %}
+    </ul>
+    
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+$(function() {
+    $('#agent-form').submit(function(e) {
+        e.preventDefault();
+
+        const title = $('#agent-title').val();
+        const description = $('#agent-description').val();
+        // const replicas = $('#agent-replicas').val();
+        const replicas = 1;
+
+        $.ajax({
+            url: '/add_agent',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ title, description, replicas }),
+            success: function(data) {
+                if (data.status === 'success') {
+                    location.reload();
+                }
+            }
+        });
+
+    });
+
+    $('.delete-btn').click(function(e) {
+        e.preventDefault();
+        const id = $(this).closest('li').data('id');
+
+        $.ajax({
+            url: '/remove_agent/' + id,
+            type: 'DELETE',
+            success: function(data) {
+                if (data.status === 'success') {
+                    location.reload();
+                }
+            }
+        });
+    });
+});
+</script>
+{% endblock %}
