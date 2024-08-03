@@ -1,7 +1,13 @@
 from flask import Flask, request, jsonify, render_template
 from kubernetes import client, config
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
+
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "notakey")
 
 # Load kube config for local development
 config.load_kube_config()
@@ -44,11 +50,14 @@ def add_agent():
             "containers": [
                 {
                     "name": "agent-fleet",
-                    "image": "docker.io/library/agent-fleet:13",
+                    "image": "docker.io/library/go-agent-fleet:2",
                     "ports": [
                         {"containerPort": 5000}
                     ],
                     "env": [
+                        {"name": "GEMINI_API_KEY", "value": GEMINI_API_KEY},
+                        {"name": "GOOGLE_GENAI_API_KEY", "value": GEMINI_API_KEY},
+                        {"name": "POST_ENDPOINT", "value": "http://192.168.81.214:5050/webhook"},
                         {"name": "TITLE", "value": title},
                         {"name": "PERSONALITY", "value": personality}
                     ],

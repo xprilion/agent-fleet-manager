@@ -20,9 +20,9 @@
         {% for agent in agents %}
             <li data-id="{{ agent.id }}" style="padding: 1rem; border: 1px dashed; display: flex; flex-direction: row; justify-content: space-between;">
                 <div style="display: flex; flex-direction: row; justify-content: space-between;">
-                    <div>
+                    <div style="font-size: x-large;">
                         <strong>{{ agent.title }}</strong>
-                        <p style="font-size: small;">{{ agent.id }} &middot; {{ agent.ip }} &middot; {{ agent.status }}</p>
+                        <p>{{ agent.id }} &middot; {{ agent.ip }} &middot; {{ agent.status }}</p>
                     </div>
                 </div>
                 <button class="delete-btn" style="max-width: fit-content;" >Delete</button>
